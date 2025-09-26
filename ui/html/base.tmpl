@@ -1,0 +1,21 @@
+{{define "base"}}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitSearch</title>
+    <link rel="stylesheet" href="/static/css/base.css">
+  </head>
+  <body>
+    <header>
+      <div>      
+        <span style="font-size: 1.2em;">⌕</span>
+        <input type="text" placeholder="Search" />
+      </div>
+    </header>
+    {{ template "main" .}}
+  </body>
+  <script src="/static/js/main.js"></script>
+</html>
+{{end}}
