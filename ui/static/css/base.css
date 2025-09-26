@@ -25,9 +25,16 @@ header div {
 header input {
   background-color: transparent;
   border: none;
-  color: #a0a0a0;
+  color: inherit;
 }
 header input:focus {
   border: none;
   outline: none;
+}
+
+/* repos */
+#repos a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }

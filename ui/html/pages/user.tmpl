@@ -1,16 +1,22 @@
 {{ define "main"}}
 <div id="hero">
-  <img>
-  <h3></h3>
-  <p></p>
-  <p></p>
+  {{ with .Profile_pic_url}}
+  <img src="{{.}}">
+  {{end}}
+  <h3>{{.Username}}</h3>
+  <p>{{.Name}}</p>
+  <p>{{.Bio}}</p>
+  <p>Followers: {{.Followers}}</p>
+  <p>Following: {{.Following}}</p>
 </div>
 <div id="repos">
-  <a>
+  {{ range .Repos }}
+  <a href={{.Url}}>
     <div class="repo">
-      <h3></h3>
-      <p></p>
+      <h3>{{.Name}}</h3>
+      <p>{{.Description}}</p>
     </div>
   </a>
+  {{end}}
 </div>
 {{end}}

@@ -10,19 +10,19 @@ import (
 
 type Repo struct {
 	Name        string `json:"name"`
-	Discription string `json:"discription"`
-	Url         string `json:"url"`
+	Description string `json:"description"`
+	Url         string `json:"html_url"`
 }
 type User struct {
-	username        string
-	name            string
-	bio             string
-	followers       float64
-	following       float64
-	repo_count      float64
-	profile_pic_url string
-	profile_url     string
-	repos           []Repo
+	Username        string
+	Name            string
+	Bio             string
+	Followers       float64
+	Following       float64
+	Repo_count      float64
+	Profile_pic_url string
+	Profile_url     string
+	Repos           []Repo
 }
 
 var PERSONAL_TOKEN = os.Getenv("GIT_PERSONAL_TOKEN")

@@ -13,7 +13,7 @@ func main() {
 	mux := http.NewServeMux()
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("GET /static/", http.StripPrefix("/static/", fileServer))
-	mux.HandleFunc("GET /", home)
+	mux.HandleFunc("GET /{$}", home)
 	mux.HandleFunc("GET /{username}", serveUser)
 
 	log.Printf("Starting the server at %s\n", *addr)

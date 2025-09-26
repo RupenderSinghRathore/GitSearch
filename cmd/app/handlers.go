@@ -63,20 +63,34 @@ func serveUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("info: %v\n", userInfo)
 	fmt.Printf("repos: %v\n", repoInfo)
 	user := User{
-		username:    userInfo["login"].(string),
-		name:        userInfo["name"].(string),
-		profile_url: userInfo["html_url"].(string),
-		repo_count:  userInfo["public_repos"].(float64),
-		followers:   userInfo["followers"].(float64),
-		following:   userInfo["following"].(float64),
-		repos:       repoInfo,
+		Username:    userInfo["login"].(string),
+		Name:        userInfo["name"].(string),
+		Profile_url: userInfo["html_url"].(string),
+		Repo_count:  userInfo["public_repos"].(float64),
+		Followers:   userInfo["followers"].(float64),
+		Following:   userInfo["following"].(float64),
+		Repos:       repoInfo,
 	}
 	if userInfo["bio"] != nil {
-		user.bio = userInfo["bio"].(string)
+		user.Bio = userInfo["bio"].(string)
 	}
 	if userInfo["avatar_url"] != nil {
-		user.profile_pic_url = userInfo["avatar_url"].(string)
+		user.Profile_pic_url = userInfo["avatar_url"].(string)
 	}
-	println("bio:", user.bio)
-	w.Write(userData)
+	println("bio:", user.Bio)
+
+	files := []string{
+		"./ui/html/pages/user.tmpl",
+		"./ui/html/base.tmpl",
+	}
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		serverError(w, err)
+		return
+	}
+	err = ts.ExecuteTemplate(w, "base", user)
+	if err != nil {
+		serverError(w, err)
+		return
+	}
 }
