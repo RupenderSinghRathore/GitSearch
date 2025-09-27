@@ -40,29 +40,29 @@ header input:focus {
   align-items: center;
   /* height: 100vh; */
   height: 60vh;
+  padding: 16px;
 }
 #hero > a {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 50px;
+  flex-wrap: wrap;
+  gap: 10px;
   background-color: #11161c;
   border-radius: 30px;
-  padding: 24px 128px;
-  /* margin: 100px 30px; */
-  /* margin-bottom: 100px; */
+  padding: 24px;
+  width: 500px;
   text-decoration: none;
   color: inherit;
   transition: all 0.2s ease;
 }
 #hero img {
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
 }
 #hero h2 {
-  margin-bottom: 0;
+  margin: 0;
 }
 .follow-list {
   display: flex;
@@ -79,27 +79,25 @@ header input:focus {
 #repos a {
   text-decoration: none;
   color: inherit;
+  display: inline-block;
 }
 #repos {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 24px;
   flex-wrap: wrap;
-  /* height: 100vh; */
+  justify-content: center;
+  gap: 24px;
 }
 #repos .repo {
+  flex: 1;
   background-color: #11161c;
-  border-radius: 30px;
-  width: 700px;
+  border-radius: 20px;
+  width: 300px;
+  height: 300px;
+  margin: 16px;
   padding: 16px;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: center;
   text-align: center;
 }
+
 .repo:hover {
   border: 1px solid rgba(147, 112, 219, 0.8);
 }
