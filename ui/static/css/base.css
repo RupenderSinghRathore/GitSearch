@@ -1,6 +1,7 @@
 @import url("colors.css");
 
 body {
+  line-height: 1.5;
   /* lighter background: #11161C */
   background-color: #0a0e12;
   color: #a0a0a0;
@@ -32,9 +33,86 @@ header input:focus {
   outline: none;
 }
 
+/* hero section */
+#hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* height: 100vh; */
+  height: 60vh;
+}
+#hero > a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  background-color: #11161c;
+  border-radius: 30px;
+  padding: 24px 128px;
+  /* margin: 100px 30px; */
+  /* margin-bottom: 100px; */
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+#hero img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+#hero h2 {
+  margin-bottom: 0;
+}
+.follow-list {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 0.9em;
+}
+#hero > a:hover {
+  box-shadow: 0 0 25px rgba(147, 112, 219, 0.8);
+  border: 1px solid rgba(147, 112, 219, 0.8);
+}
+
 /* repos */
 #repos a {
   text-decoration: none;
   color: inherit;
-  display: block;
+}
+#repos {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  /* height: 100vh; */
+}
+#repos .repo {
+  background-color: #11161c;
+  border-radius: 30px;
+  width: 700px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+.repo:hover {
+  border: 1px solid rgba(147, 112, 219, 0.8);
+}
+
+/* home page */
+.home {
+  margin: 100px;
+  text-align: center;
+  font-size: 2.5em;
+}
+
+/* Not found user */
+.notfound {
+  margin: 40px;
+  text-align: center;
 }

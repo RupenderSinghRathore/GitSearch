@@ -33,10 +33,13 @@ func serveUser(w http.ResponseWriter, r *http.Request) {
 		serverError(w, err)
 		return
 	}
-	repoUrl := fmt.Sprintf("https://api.github.com/users/%s/repos?per_page=5", username)
+	repoUrl := fmt.Sprintf(
+		"https://api.github.com/search/repositories?q=user:%s&sort=stars&order=desc&per_page=5",
+		username,
+	)
+	// repoUrl := fmt.Sprintf("https://api.github.com/users/%s/repos?per_page=5", username)
 	repoData, err := fetchUserInfo(repoUrl)
 	if err != nil {
-		print(err)
 		serverError(w, err)
 		return
 	}
@@ -49,27 +52,40 @@ func serveUser(w http.ResponseWriter, r *http.Request) {
 	if status, ok := userInfo["status"].(string); ok {
 		code, err := strconv.Atoi(status)
 		if err != nil || code >= 400 {
-			serverError(w, err)
+			files := []string{
+				"./ui/html/base.tmpl",
+				"./ui/html/pages/notfound.tmpl",
+			}
+			ts, err := template.ParseFiles(files...)
+			if err != nil {
+				serverError(w, err)
+				return
+			}
+			err = ts.ExecuteTemplate(w, "base", username)
+			if err != nil {
+				serverError(w, err)
+				return
+			}
 			return
 		}
 	}
 
-	repoInfo := make([]Repo, 0, 5)
+	repoInfo := staredRepo{}
 	err = json.Unmarshal(repoData, &repoInfo)
 	if err != nil {
 		serverError(w, err)
 		return
 	}
-	fmt.Printf("info: %v\n", userInfo)
-	fmt.Printf("repos: %v\n", repoInfo)
 	user := User{
 		Username:    userInfo["login"].(string),
-		Name:        userInfo["name"].(string),
 		Profile_url: userInfo["html_url"].(string),
 		Repo_count:  userInfo["public_repos"].(float64),
 		Followers:   userInfo["followers"].(float64),
 		Following:   userInfo["following"].(float64),
-		Repos:       repoInfo,
+		Repos:       repoInfo.Repos,
+	}
+	if userInfo["name"] != nil {
+		user.Name = userInfo["name"].(string)
 	}
 	if userInfo["bio"] != nil {
 		user.Bio = userInfo["bio"].(string)
@@ -77,7 +93,7 @@ func serveUser(w http.ResponseWriter, r *http.Request) {
 	if userInfo["avatar_url"] != nil {
 		user.Profile_pic_url = userInfo["avatar_url"].(string)
 	}
-	println("bio:", user.Bio)
+	// println("bio:", user.Bio)
 
 	files := []string{
 		"./ui/html/pages/user.tmpl",

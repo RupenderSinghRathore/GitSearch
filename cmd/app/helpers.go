@@ -6,8 +6,12 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"runtime/debug"
 )
 
+type staredRepo struct {
+	Repos []Repo `json:"items"`
+}
 type Repo struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
@@ -50,4 +54,17 @@ func fetchUserInfo(url string) ([]byte, error) {
 func serverError(w http.ResponseWriter, err error) {
 	log.Println(err)
 	http.Error(w, "Internal server error", http.StatusInternalServerError)
+	fmt.Fprintf(os.Stdout, "trace: %s\n", string(debug.Stack()))
+}
+func recoverPanic(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				r.Header.Set("Connection", "close")
+				// serverError(w, fmt.Errorf("%s", err))
+				serverError(w, err.(error))
+			}
+		}()
+		next.ServeHTTP(w, r)
+	})
 }
