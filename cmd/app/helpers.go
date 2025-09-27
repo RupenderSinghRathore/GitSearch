@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"runtime/debug"
+	"time"
 )
 
 type staredRepo struct {
@@ -38,9 +40,11 @@ func fetchUserInfo(url string) ([]byte, error) {
 	}
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", PERSONAL_TOKEN))
 
-	client := http.Client{}
+	client := http.Client{
+		Timeout: 10 * time.Second,
+	}
+	// print("req:", req.Header)
 	res, err := client.Do(req)
-
 	if err != nil {
 		log.Print(err)
 		return nil, err
@@ -51,10 +55,24 @@ func fetchUserInfo(url string) ([]byte, error) {
 	return data, nil
 }
 
-func serverError(w http.ResponseWriter, err error) {
+func serverError(w http.ResponseWriter, err error, errStr string) {
 	log.Println(err)
-	http.Error(w, "Internal server error", http.StatusInternalServerError)
+	// http.Error(w, "Internal server error", http.StatusInternalServerError)
 	fmt.Fprintf(os.Stdout, "trace: %s\n", string(debug.Stack()))
+	files := []string{
+		"./ui/html/base.tmpl",
+		"./ui/html/pages/notfound.tmpl",
+	}
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		serverError(w, err, "Internal Server Error")
+		return
+	}
+	err = ts.ExecuteTemplate(w, "base", errStr)
+	if err != nil {
+		serverError(w, err, "Internal Server Error")
+		return
+	}
 }
 func recoverPanic(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -62,9 +80,11 @@ func recoverPanic(next http.Handler) http.Handler {
 			if err := recover(); err != nil {
 				r.Header.Set("Connection", "close")
 				// serverError(w, fmt.Errorf("%s", err))
-				serverError(w, err.(error))
+				serverError(w, err.(error), "Internal Server Error")
 			}
 		}()
 		next.ServeHTTP(w, r)
 	})
+}
+func errorTemplate(w http.ResponseWriter, errorStr string) {
 }

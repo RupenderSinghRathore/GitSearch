@@ -15,13 +15,13 @@ func home(w http.ResponseWriter, r *http.Request) {
 	}
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, err, "Internal Server Error")
 		return
 	}
 	err = ts.ExecuteTemplate(w, "base", nil)
 	// err = ts.Execute(w, nil)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, err, "Internal Server Error")
 		return
 	}
 }
@@ -30,42 +30,29 @@ func serveUser(w http.ResponseWriter, r *http.Request) {
 	infoUrl := fmt.Sprintf("https://api.github.com/users/%s", username)
 	userData, err := fetchUserInfo(infoUrl)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, err, "Internal Server Error")
 		return
 	}
+	// repoUrl := fmt.Sprintf("https://api.github.com/users/%s/repos?per_page=5", username)
 	repoUrl := fmt.Sprintf(
 		"https://api.github.com/search/repositories?q=user:%s&sort=stars&order=desc&per_page=5",
 		username,
 	)
-	// repoUrl := fmt.Sprintf("https://api.github.com/users/%s/repos?per_page=5", username)
 	repoData, err := fetchUserInfo(repoUrl)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, err, "Internal Server Error")
 		return
 	}
 	userInfo := make(map[string]any)
 	err = json.Unmarshal(userData, &userInfo)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, err, "Internal Server Error")
 		return
 	}
 	if status, ok := userInfo["status"].(string); ok {
 		code, err := strconv.Atoi(status)
 		if err != nil || code >= 400 {
-			files := []string{
-				"./ui/html/base.tmpl",
-				"./ui/html/pages/notfound.tmpl",
-			}
-			ts, err := template.ParseFiles(files...)
-			if err != nil {
-				serverError(w, err)
-				return
-			}
-			err = ts.ExecuteTemplate(w, "base", username)
-			if err != nil {
-				serverError(w, err)
-				return
-			}
+			serverError(w, err, fmt.Sprintf("\"%s\" user not found", username))
 			return
 		}
 	}
@@ -73,7 +60,7 @@ func serveUser(w http.ResponseWriter, r *http.Request) {
 	repoInfo := staredRepo{}
 	err = json.Unmarshal(repoData, &repoInfo)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, err, "Internal Server Error")
 		return
 	}
 	user := User{
@@ -101,12 +88,12 @@ func serveUser(w http.ResponseWriter, r *http.Request) {
 	}
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, err, "Internal Server Error")
 		return
 	}
 	err = ts.ExecuteTemplate(w, "base", user)
 	if err != nil {
-		serverError(w, err)
+		serverError(w, err, "Internal Server Error")
 		return
 	}
 }
