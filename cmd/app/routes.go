@@ -8,5 +8,5 @@ func routes() http.Handler {
 	mux.Handle("GET /static/", http.StripPrefix("/static/", fileServer))
 	mux.HandleFunc("GET /{$}", home)
 	mux.HandleFunc("GET /{username}", serveUser)
-	return mux
+	return recoverPanic(mux)
 }
