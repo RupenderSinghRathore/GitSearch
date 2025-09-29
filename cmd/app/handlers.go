@@ -19,7 +19,6 @@ func home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	err = ts.ExecuteTemplate(w, "base", nil)
-	// err = ts.Execute(w, nil)
 	if err != nil {
 		serverError(w, err, "Internal Server Error")
 		return
@@ -40,7 +39,7 @@ func serveUser(w http.ResponseWriter, r *http.Request) {
 	)
 	repoData, err := fetchUserInfo(repoUrl)
 	if err != nil {
-		serverError(w, err, "Internal Server Error")
+		serverError(w, err, "Timelimit execeeded")
 		return
 	}
 	userInfo := make(map[string]any)
@@ -80,7 +79,6 @@ func serveUser(w http.ResponseWriter, r *http.Request) {
 	if userInfo["avatar_url"] != nil {
 		user.Profile_pic_url = userInfo["avatar_url"].(string)
 	}
-	// println("bio:", user.Bio)
 
 	files := []string{
 		"./ui/html/pages/user.tmpl",

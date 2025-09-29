@@ -41,9 +41,8 @@ func fetchUserInfo(url string) ([]byte, error) {
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", PERSONAL_TOKEN))
 
 	client := http.Client{
-		Timeout: 10 * time.Second,
+		Timeout: 5 * time.Second,
 	}
-	// print("req:", req.Header)
 	res, err := client.Do(req)
 	if err != nil {
 		log.Print(err)
@@ -85,6 +84,4 @@ func recoverPanic(next http.Handler) http.Handler {
 		}()
 		next.ServeHTTP(w, r)
 	})
-}
-func errorTemplate(w http.ResponseWriter, errorStr string) {
 }

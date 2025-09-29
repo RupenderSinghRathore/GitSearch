@@ -3,6 +3,8 @@
   <a href={{.Profile_url}} target="_blank">
     {{ with .Profile_pic_url}}
     <img src={{.}}>
+    {{else}}
+    <img src="/static/img/user.jpg">
     {{end}}
     <div>
       <h2>{{.Username}}</h2>
